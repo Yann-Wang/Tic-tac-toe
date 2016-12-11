@@ -23,4 +23,3 @@ SET "NODE_ENV=production" && npm start
 
 ##### cite
 - [wikipedia](https://en.wikipedia.org/wiki/Tic-tac-toe)
-
