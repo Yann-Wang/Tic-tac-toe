@@ -9,9 +9,9 @@
 cd tic_tac_toe
 npm install
 # for Linux/Mac users
-NODE_ENV=production npm start
+NODE_ENV=development npm start
 # for Windows users
-SET "NODE_ENV=production" && npm start
+SET "NODE_ENV=development" && npm start
 
 ```
 
