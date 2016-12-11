@@ -5,3 +5,4 @@ dist
 node_modules
 public/bundle.js
 .idea
+*.bundle.js
