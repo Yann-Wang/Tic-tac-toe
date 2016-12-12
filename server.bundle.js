@@ -336,6 +336,11 @@
 	            return _react2.default.createElement(
 	                'div',
 	                null,
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'tic-tac-toe-profile' },
+	                    'Tic-tac-toe (also known as noughts and crosses or Xs and Os) is a paper-and-pencil game for two players, X and O, who take turns marking the spaces in a 3\xD73 grid. The player who succeeds in placing three of their marks in a horizontal, vertical, or diagonal row wins the game.'
+	                ),
 	                _react2.default.createElement(_Errors2.default, null),
 	                _react2.default.createElement(_Game2.default, null)
 	            );
@@ -433,7 +438,7 @@
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -447,6 +452,14 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _Board = __webpack_require__(14);
+
+	var _Board2 = _interopRequireDefault(_Board);
+
+	var _MoveList = __webpack_require__(16);
+
+	var _MoveList2 = _interopRequireDefault(_MoveList);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -458,140 +471,84 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 
-	var Square = function (_React$Component) {
-	    _inherits(Square, _React$Component);
-
-	    function Square(props) {
-	        _classCallCheck(this, Square);
-
-	        return _possibleConstructorReturn(this, (Square.__proto__ || Object.getPrototypeOf(Square)).call(this, props));
-	    }
-
-	    _createClass(Square, [{
-	        key: "render",
-	        value: function render() {
-	            var _this2 = this;
-
-	            return _react2.default.createElement(
-	                "button",
-	                { className: "square", onClick: function onClick() {
-	                        return _this2.props.onClick();
-	                    } },
-	                this.props.value
-	            );
-	        }
-	    }]);
-
-	    return Square;
-	}(_react2.default.Component);
-
-	var Board = function (_React$Component2) {
-	    _inherits(Board, _React$Component2);
-
-	    function Board() {
-	        _classCallCheck(this, Board);
-
-	        return _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).apply(this, arguments));
-	    }
-
-	    _createClass(Board, [{
-	        key: "renderSquare",
-	        value: function renderSquare(i) {
-	            var _this4 = this;
-
-	            return _react2.default.createElement(Square, { value: this.props.squares[i], onClick: function onClick(e) {
-	                    return _this4.props.onClick(i, e);
-	                } });
-	        }
-	    }, {
-	        key: "render",
-	        value: function render() {
-
-	            return _react2.default.createElement(
-	                "div",
-	                null,
-	                _react2.default.createElement(
-	                    "div",
-	                    { className: "board-row" },
-	                    this.renderSquare(0),
-	                    this.renderSquare(1),
-	                    this.renderSquare(2)
-	                ),
-	                _react2.default.createElement(
-	                    "div",
-	                    { className: "board-row" },
-	                    this.renderSquare(3),
-	                    this.renderSquare(4),
-	                    this.renderSquare(5)
-	                ),
-	                _react2.default.createElement(
-	                    "div",
-	                    { className: "board-row" },
-	                    this.renderSquare(6),
-	                    this.renderSquare(7),
-	                    this.renderSquare(8)
-	                )
-	            );
-	        }
-	    }]);
-
-	    return Board;
-	}(_react2.default.Component);
-
-	var Game = function (_React$Component3) {
-	    _inherits(Game, _React$Component3);
+	var Game = function (_React$Component) {
+	    _inherits(Game, _React$Component);
 
 	    function Game() {
 	        _classCallCheck(this, Game);
 
-	        var _this5 = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this));
+	        var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this));
 
-	        _this5.state = {
+	        _this.jumpTo = _this.jumpTo.bind(_this);
+	        _this.state = {
 	            history: [{
-	                squares: Array(9).fill(null),
+	                squares: new Array(9).fill(null),
 	                active: null
 	            }],
 	            xIsNext: true,
-	            stepNumber: 0
+	            stepNumber: 0,
+	            ascending: true
 	        };
-	        _this5.restart = true;
-	        return _this5;
+	        return _this;
 	    }
 
 	    _createClass(Game, [{
-	        key: "handleClick",
+	        key: 'handleClick',
 	        value: function handleClick(i, e) {
-	            if (this.restart == true) {}
-
 	            var history = this.state.history;
 	            var stepNumber = this.state.stepNumber;
-	            var current = history[stepNumber];
-	            var squares = current.squares.slice();
-	            console.log(stepNumber);
-	            /*if(stepNumber != history.length-1){
-	                //history.length = stepNumber+1;
-	                history.splice(stepNumber+1);
-	              }*/
+	            var current = void 0,
+	                squares = void 0;
+
+	            current = history[stepNumber];
+	            squares = current.squares.slice();
+
 	            if (calculateWinner(squares) || squares[i]) {
 	                return;
 	            }
 	            squares[i] = this.state.xIsNext ? 'X' : 'O';
-	            this.setState({
-	                stepNumber: history.length,
-	                history: history.concat([{
+
+	            if (this.state.ascending) {
+
+	                if (stepNumber != history.length - 1) {
+	                    history = history.slice(0, stepNumber + 1);
+	                }
+
+	                stepNumber = history.length;
+
+	                history = history.concat([{
 	                    squares: squares,
 	                    active: {
-	                        x: parseInt(i / 3),
+	                        x: parseInt(i / 3 + 1),
 	                        y: parseInt(i % 3 + 1)
 	                    }
-	                }]),
+	                }]);
+	            } else {
+
+	                var start = history.slice(0, 1);
+	                history = history.slice(stepNumber);
+
+	                stepNumber = 1;
+
+	                history.unshift({
+	                    squares: squares,
+	                    active: {
+	                        x: parseInt(i / 3 + 1),
+	                        y: parseInt(i % 3 + 1)
+	                    }
+	                });
+
+	                history.unshift(start);
+	            }
+
+	            this.setState({
+	                stepNumber: stepNumber,
+	                history: history,
 	                xIsNext: !this.state.xIsNext
 	            });
-
-	            this.restart = false;
 	        }
 	    }, {
-	        key: "jumpTo",
+	        key: 'jumpTo',
 	        value: function jumpTo(step, e) {
 	            if (e.target.tagName === 'A' && e.target.getAttribute('href') === '#') {
 	                e.preventDefault();
@@ -603,9 +560,30 @@
 	            });
 	        }
 	    }, {
-	        key: "render",
+	        key: 'toggle',
+	        value: function toggle() {
+	            var moves = this.state.history.slice();
+	            var len = moves.length;
+
+	            for (var i = 1, j = len - 1, tmp; i < len; ++i, --j) {
+	                if (i >= j) {
+	                    break;
+	                }
+	                tmp = moves[i];
+	                moves[i] = moves[j];
+	                moves[j] = tmp;
+	            }
+
+	            this.setState({
+	                history: moves,
+	                stepNumber: this.state.history.length - 1 - this.state.stepNumber + 1,
+	                ascending: !this.state.ascending
+	            });
+	        }
+	    }, {
+	        key: 'render',
 	        value: function render() {
-	            var _this6 = this;
+	            var _this2 = this;
 
 	            var history = this.state.history;
 	            var current = history[this.state.stepNumber];
@@ -613,58 +591,46 @@
 
 	            var status = void 0;
 	            if (winner) {
-	                status = 'Winner: ' + winner;
+	                status = 'Winner: ' + winner.winner;
 	            } else {
 	                status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 	            }
 
-	            var moves = history.map(function (step, move) {
-	                var coordinate = step.active ? "(" + step.active.x + "," + step.active.y + ")" : move;
-	                var desc = move ? 'Move #' + coordinate : 'Game start';
-	                return _react2.default.createElement(
-	                    "li",
-	                    { key: move },
-	                    _react2.default.createElement(
-	                        "a",
-	                        { href: "#", onClick: function onClick(e) {
-	                                return _this6.jumpTo(move, e);
-	                            } },
-	                        desc
-	                    )
-	                );
-	            });
-
 	            return _react2.default.createElement(
-	                "div",
-	                { className: "game" },
+	                'div',
+	                { className: 'game' },
 	                _react2.default.createElement(
-	                    "div",
-	                    { className: "game-board" },
-	                    _react2.default.createElement(Board, {
+	                    'div',
+	                    { className: 'game-board' },
+	                    _react2.default.createElement(_Board2.default, {
 	                        squares: current.squares,
 	                        onClick: function onClick(i, e) {
-	                            return _this6.handleClick(i, e);
-	                        }
+	                            return _this2.handleClick(i, e);
+	                        },
+	                        winner: winner
 	                    })
 	                ),
 	                _react2.default.createElement(
-	                    "div",
-	                    { className: "game-info" },
+	                    'div',
+	                    { className: 'game-info' },
 	                    _react2.default.createElement(
-	                        "div",
+	                        'div',
 	                        null,
 	                        status
 	                    ),
 	                    _react2.default.createElement(
-	                        "ol",
-	                        null,
-	                        moves
-	                    )
+	                        'button',
+	                        { onClick: function onClick() {
+	                                return _this2.toggle();
+	                            } },
+	                        'toggle'
+	                    ),
+	                    _react2.default.createElement(_MoveList2.default, { history: history, jumpTo: this.jumpTo, stepNumber: this.state.stepNumber, ascending: this.state.ascending })
 	                )
 	            );
 	        }
 	    }, {
-	        key: "componentDidMount",
+	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 
 	            window.addEventListener('mousedown', function (e) {
@@ -700,13 +666,301 @@
 	            c = _lines$i[2];
 
 	        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-	            return squares[a];
+	            return {
+	                lines: lines[i],
+	                winner: squares[a]
+	            };
 	        }
 	    }
 	    return null;
 	}
 
 	exports.default = Game;
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(4);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Square = __webpack_require__(15);
+
+	var _Square2 = _interopRequireDefault(_Square);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by a_wav on 2016/12/12.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+
+	var Board = function (_React$Component) {
+	    _inherits(Board, _React$Component);
+
+	    function Board(props) {
+	        _classCallCheck(this, Board);
+
+	        return _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).call(this, props));
+	    }
+
+	    _createClass(Board, [{
+	        key: 'renderSquare',
+	        value: function renderSquare(i, c) {
+	            var _this2 = this;
+
+	            return _react2.default.createElement(_Square2.default, { key: c, value: this.props.squares[i], onClick: function onClick(e) {
+	                    return _this2.props.onClick(i, e);
+	                } });
+	        }
+	    }, {
+	        key: 'renderBoard',
+	        value: function renderBoard() {
+	            var _this3 = this;
+
+	            var i = void 0,
+	                j = void 0,
+	                row = void 0,
+	                board = [];
+
+	            for (i = 0; i < 3; ++i) {
+	                row = [];
+
+	                for (j = 0; j < 3; ++j) {
+	                    row[j] = this.renderSquare(i * 3 + j, j);
+	                }
+
+	                board[i] = _react2.default.createElement(
+	                    'div',
+	                    { className: 'board-row', key: i },
+	                    row
+	                );
+	            }
+
+	            return _react2.default.createElement(
+	                'div',
+	                { ref: function ref(brd) {
+	                        return _this3.brd = brd;
+	                    } },
+	                board
+	            );
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return this.renderBoard();
+	        }
+	    }, {
+	        key: 'calcCoordinate',
+	        value: function calcCoordinate(i) {
+	            return {
+	                x: parseInt(i / 3),
+	                y: parseInt(i % 3)
+	            };
+	        }
+	    }, {
+	        key: 'boardWinnerFocus',
+	        value: function boardWinnerFocus(arr) {
+	            var children = this.brd.children;
+	            var len = children.length;
+	            var row = void 0,
+	                column = void 0,
+	                coor = void 0;
+
+	            if (arr) {
+	                arr = arr.lines;
+
+	                for (var i = 0; i < arr.length; ++i) {
+	                    coor = this.calcCoordinate(arr[i]);
+	                    row = children[coor.x];
+	                    column = row.children[coor.y];
+	                    column.classList.add('board-winner-focus');
+	                }
+	            } else {
+	                for (var _i = 0; _i < len; ++_i) {
+	                    row = children[_i];
+	                    column = row.children;
+
+	                    for (var j = 0; j < column.length; ++j) {
+	                        column[j].classList.remove('board-winner-focus');
+	                    }
+	                }
+	            }
+	        }
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate() {
+	            this.boardWinnerFocus(this.props.winner);
+	        }
+	    }]);
+
+	    return Board;
+	}(_react2.default.Component);
+
+	exports.default = Board;
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(4);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by a_wav on 2016/12/12.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+
+	var Square = function (_React$Component) {
+	    _inherits(Square, _React$Component);
+
+	    function Square(props) {
+	        _classCallCheck(this, Square);
+
+	        return _possibleConstructorReturn(this, (Square.__proto__ || Object.getPrototypeOf(Square)).call(this, props));
+	    }
+
+	    _createClass(Square, [{
+	        key: "render",
+	        value: function render() {
+	            var _this2 = this;
+
+	            return _react2.default.createElement(
+	                "button",
+	                { className: "square", onClick: function onClick() {
+	                        return _this2.props.onClick();
+	                    } },
+	                this.props.value
+	            );
+	        }
+	    }]);
+
+	    return Square;
+	}(_react2.default.Component);
+
+	exports.default = Square;
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(4);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by a_wav on 2016/12/11.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+
+	var MoveList = function (_React$Component) {
+	    _inherits(MoveList, _React$Component);
+
+	    function MoveList(props) {
+	        _classCallCheck(this, MoveList);
+
+	        return _possibleConstructorReturn(this, (MoveList.__proto__ || Object.getPrototypeOf(MoveList)).call(this, props));
+	    }
+
+	    _createClass(MoveList, [{
+	        key: "render",
+	        value: function render() {
+	            var _this2 = this;
+
+	            var moves = this.props.history.map(function (step, move) {
+	                var coordinate = step.active ? "(" + step.active.x + "," + step.active.y + ")" : move;
+	                var desc = move ? 'Move #' + coordinate : 'Game start';
+	                return _react2.default.createElement(
+	                    "li",
+	                    { key: move },
+	                    _react2.default.createElement(
+	                        "a",
+	                        { href: "#", onClick: function onClick(e) {
+	                                return _this2.props.jumpTo(move, e);
+	                            } },
+	                        desc
+	                    )
+	                );
+	            });
+
+	            return _react2.default.createElement(
+	                "ol",
+	                { ref: function ref(ol) {
+	                        return _this2.ol = ol;
+	                    } },
+	                moves
+	            );
+	        }
+	    }, {
+	        key: "setFocus",
+	        value: function setFocus(n) {
+	            var children = this.ol.children;
+	            var len = children.length;
+
+	            for (var i = 0; i < len; ++i) {
+	                children[i].classList.remove('movelist-focus');
+	            }
+
+	            children[n].classList.add('movelist-focus');
+	        }
+	    }, {
+	        key: "componentDidMount",
+	        value: function componentDidMount() {
+	            this.setFocus(this.props.stepNumber);
+	        }
+	    }, {
+	        key: "componentDidUpdate",
+	        value: function componentDidUpdate() {
+	            this.setFocus(this.props.stepNumber);
+	        }
+	    }]);
+
+	    return MoveList;
+	}(_react2.default.Component);
+
+	exports.default = MoveList;
 
 /***/ }
 /******/ ]);
