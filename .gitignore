@@ -4,5 +4,8 @@ coverage
 dist
 node_modules
 public/bundle.js
+public/.gitignore
+public/README.md
 .idea
 *.bundle.js
+.gitignore

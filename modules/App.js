@@ -7,8 +7,8 @@ export default React.createClass({
             <div>
                 <h1>Tic-tac-toe</h1>
                 <ul role="nav">
-                    <li><NavLink to="/" onlyActiveOnIndex>Home</NavLink></li>
-                    <li><NavLink to="/game">Tic_tac_toe</NavLink></li>
+                    <li><NavLink to="/" onlyActiveOnIndex>Home-Tic_tac_toe</NavLink></li>
+                    {/*<li><NavLink to="/game">Tic_tac_toe</NavLink></li>*/}
                 </ul>
                 {this.props.children}
             </div>
