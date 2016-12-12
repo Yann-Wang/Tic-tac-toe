@@ -38,6 +38,10 @@ SET "NODE_ENV=production" && npm start
 - Add a toggle button that lets you sort the moves in either ascending or descending order.
 - When someone wins, highlight the three squares that caused the win.
 
+##### tag
+- v2.0  game displayed at /index.html
+- v1.8  game displayed at /game
+
 ##### cite
 - [wikipedia](https://en.wikipedia.org/wiki/Tic-tac-toe)
 - [Tutorial: Intro To React](https://facebook.github.io/react/tutorial/tutorial.html)
