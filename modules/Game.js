@@ -2,90 +2,73 @@
  * Created by a_wav on 2016/12/9.
  */
 import React from 'react'
-
-class Square extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <button className="square" onClick={() => this.props.onClick()}>
-                {this.props.value}
-            </button>
-        );
-    }
-}
-
-class Board extends React.Component {
-
-    renderSquare(i) {
-        return <Square value={this.props.squares[i]} onClick={(e) => this.props.onClick(i,e)}/>;
-    }
-
-    render() {
-
-
-        return (
-            <div>
-                {/*<div className="status">{status}</div>*/}
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
-            </div>
-        );
-    }
-}
+import Board from './Board'
+import MoveList from './MoveList'
 
 class Game extends React.Component {
     constructor() {
         super();
+        this.jumpTo = this.jumpTo.bind(this);
         this.state = {
             history: [{
-                squares: Array(9).fill(null),
+                squares: (new Array(9)).fill(null),
                 active:null
             }],
             xIsNext: true,
-            stepNumber: 0
+            stepNumber: 0,
+            ascending:true
         };
     }
 
     handleClick(i,e) {
-        var history = this.state.history;
-        const stepNumber = this.state.stepNumber;
-        const current = history[stepNumber];
-        const squares = current.squares.slice();
-        //console.log(stepNumber);
+        let history = this.state.history;
+        let stepNumber = this.state.stepNumber;
+        let current,squares;
 
-        if(stepNumber != history.length-1){
-            history = history.slice(0,stepNumber+1);
-        }
+        current = history[stepNumber];
+        squares = current.squares.slice();
 
         if (calculateWinner(squares) || squares[i]) {
             return;
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
-        this.setState({
-            stepNumber: history.length,
-            history: history.concat([{
+
+        if(this.state.ascending){
+
+            if(stepNumber != history.length-1){
+                history = history.slice(0,stepNumber+1);
+            }
+
+            stepNumber = history.length;
+
+            history = history.concat([{
                 squares: squares,
                 active:{
                     x:parseInt((i)/3+1),
                     y:parseInt((i)%3+1)
                 }
-            }]),
+            }])
+        } else{
+
+            let start = history.slice(0,1);
+            history = history.slice(stepNumber);
+
+            stepNumber = 1;
+
+            history.unshift({
+                squares: squares,
+                active:{
+                    x:parseInt((i)/3+1),
+                    y:parseInt((i)%3+1)
+                }
+            });
+
+            history.unshift(start);
+        }
+
+        this.setState({
+            stepNumber: stepNumber,
+            history: history,
             xIsNext: !this.state.xIsNext
         });
     }
@@ -101,6 +84,26 @@ class Game extends React.Component {
         });
     }
 
+    toggle(){
+        let moves = this.state.history.slice();
+        let len = moves.length;
+
+        for (let i = 1, j = len - 1, tmp; i < len; ++i, --j) {
+            if (i >= j) {
+                break;
+            }
+            tmp = moves[i];
+            moves[i] = moves[j];
+            moves[j] = tmp;
+        }
+
+        this.setState({
+            history: moves,
+            stepNumber: this.state.history.length-1 - this.state.stepNumber +1,
+            ascending: !this.state.ascending
+        });
+    }
+
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
@@ -108,22 +111,11 @@ class Game extends React.Component {
 
         let status;
         if (winner) {
-            status = 'Winner: ' + winner;
+            status = 'Winner: ' + winner.winner;
         } else {
             status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
 
-        const moves = history.map((step, move) => {
-            const coordinate = step.active ? "(" + step.active.x +"," + step.active.y + ")" : move;
-            const desc = move ?
-            'Move #' + coordinate :
-                'Game start';
-            return (
-                <li key={move}>
-                    <a href="#" onClick={(e) => this.jumpTo(move,e)}>{desc}</a>
-                </li>
-            );
-        });
 
         return (
             <div className="game">
@@ -131,11 +123,13 @@ class Game extends React.Component {
                     <Board
                         squares={current.squares}
                         onClick={(i,e) => this.handleClick(i,e)}
+                        winner={winner}
                     />
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
-                    <ol>{moves}</ol>
+                    <button onClick={()=>this.toggle()}>toggle</button>
+                    <MoveList history={history} jumpTo={this.jumpTo} stepNumber={this.state.stepNumber} ascending={this.state.ascending} />
                 </div>
             </div>
         );
@@ -178,7 +172,10 @@ function calculateWinner(squares) {
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
+            return {
+                lines:lines[i],
+                winner:squares[a]
+            };
         }
     }
     return null;

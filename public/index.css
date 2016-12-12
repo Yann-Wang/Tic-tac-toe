@@ -25,15 +25,15 @@ ol, ul {
     background: #fff;
     border: 1px solid #999;
     float: left;
-    font-size: 24px;
+    font-size: 40px;
     font-weight: bold;
-    line-height: 34px;
-    height: 34px;
+    line-height: 46px;
+    height: 60px;
     margin-right: -1px;
     margin-top: -1px;
     padding: 0;
     text-align: center;
-    width: 34px;
+    width: 60px;
 }
 
 .square:focus {
@@ -44,6 +44,8 @@ ol, ul {
     background: #ddd;
 }
 
+
+
 .game {
     display: flex;
     flex-direction: row;
@@ -51,4 +53,18 @@ ol, ul {
 
 .game-info {
     margin-left: 20px;
+    width:200px;
+}
+
+.movelist-focus{
+    font-weight:bold;
+}
+
+.board-winner-focus{
+    background:greenyellow;
+}
+
+.tic-tac-toe-profile{
+    margin:10px 0 20px;
+    font: 18px/24px scan-serif;
 }
