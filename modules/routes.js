@@ -5,7 +5,7 @@ import App from './App'
 import Tic_tac_toe from './Tic_tac_toe'
 
 module.exports = (
-    <Route path="/" component={App}>
+    <Route path="/tic-tac-toe-bundle" component={App}>
         <IndexRoute component={Tic_tac_toe}/>
         {/*<Route path="/game" component={Tic_tac_toe}/>*/}
     </Route>
